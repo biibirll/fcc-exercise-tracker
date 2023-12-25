@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercise Tracker</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <main>
+        <h1 class="text-center">Exercise Tracker</h1>
+
+        <div class="row">
+          <div class="col">
+            <h2>About the project</h2>
+
+            <p>
+              This is a full stack exercise tracker app built with TypeScript +
+              Express + MongoDB designed as a solution to FreeCodeCamp's
+              <a
+                href="https://www.freecodecamp.org/learn/back-end-development-and-apis/#back-end-development-and-apis-projects"
+                >Back End Development and APIs Certification</a
+              >. It tracks users and their respective exercise logs through a
+              series of API endpoints, shown in the table below.
+            </p>
+
+            <table class="table">
+              <caption>
+                API endpoints of the exercise tracker
+              </caption>
+
+              <thead>
+                <tr>
+                  <th>Endpoint</th>
+                  <th>Method</th>
+                  <th>URL params</th>
+                  <th>Query params</th>
+                  <th>Body</th>
+                  <th>Status codes</th>
+                  <th>Response</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>/api/users</td>
+                  <td>POST</td>
+                  <td>None</td>
+                  <td>None</td>
+                  <td>{"username": string}</td>
+                  <td>201, 400, 500</td>
+                  <td>
+                    {"_id": string, "username": string} or {"error": string}
+                  </td>
+                  <td>
+                    Given a valid username, persists the user in the database
+                    and returns 201 + the created object as JSON. Given no
+                    username, returns 400 + a JSON describing the error. In any
+                    other error case, returns 500 + a JSON describing the error.
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>/api/users</td>
+                  <td>GET</td>
+                  <td>None</td>
+                  <td>None</td>
+                  <td>None</td>
+                  <td>200, 500</td>
+                  <td>
+                    [{"_id": string, "username": string}] or {"error": string}
+                  </td>
+                  <td>
+                    Returns 200 + a JSON array of all users persisted in the
+                    database. In any error case, returns 500 + a JSON describing
+                    the error.
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>/api/users/:_id/exercises</td>
+                  <td>POST</td>
+                  <td>
+                    <ul>
+                      <li>
+                        _id: the _id of the user whose exercise is being
+                        created.
+                      </li>
+                    </ul>
+                  </td>
+                  <td>None</td>
+                  <td>{date: string, description: string, duration: number}</td>
+                  <td>201, 400, 404, 500</td>
+                  <td>
+                    {"_id": string, "username": string, "date": string,
+                    "description": string, "duration": number} or {"error":
+                    string}
+                  </td>
+                  <td>
+                    Given an existing _id (representing the user _id) and a
+                    valid exercise containing a description, a duration and
+                    optionally a date in the formate "yyy-mm-dd", persists the
+                    exercise in the database and returns 201 + a JSON combining
+                    fields from the user and the newly created exercise. Given a
+                    non existing _id, returns 404 and a JSON describing that the
+                    user could not be found. Given an invalid exercise, returns
+                    400 + a JSON describing the error. In any other error case,
+                    returns 500 + a JSON describing the error.
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>/api/users/:_id/logs</td>
+                  <td>GET</td>
+                  <td>
+                    <ul>
+                      <li>
+                        _id: the _id of the user whose logs will be returned.
+                      </li>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul>
+                      <li>
+                        from: a date string in the format "yyyy-mm-dd" to filter
+                        the data.
+                      </li>
+                      <li>
+                        to: a date string in the format "yyyy-mm-dd" to filter
+                        the data.
+                      </li>
+                      <li>
+                        limit: a number representing how many exercises to
+                        return.
+                      </li>
+                    </ul>
+                  </td>
+                  <td>None</td>
+                  <td>200, 404, 400, 500</td>
+                  <td>
+                    {"_id": string, "username": string, "log": [{"_id": string,
+                    "date": string, "description": string, "duration": number}]}
+                    or {"error": string}
+                  </td>
+                  <td>
+                    Given an existing _id, returns 200 + the user an their
+                    respective exercise log optionally filtered by date with
+                    from and to and limited by limit. Given a non existing _id,
+                    return 404 + a JSON describing that the user could not be
+                    found. Given invalid URL or query params, returns 400 + a
+                    JSON describing the error. In any other error case, returns
+                    500 + a JSON describing the error.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col">
+            <h2>Test the API</h2>
+
+            <p>Use the forms below to test the API endpoints</p>
+
+            <h3>Create an user</h3>
+
+            <form action="/api/users" method="post">
+              <label class="form-label" for="username">Username: </label>
+              <input
+                class="form-control"
+                type="text"
+                id="username"
+                name="username"
+                required
+              />
+
+              <button type="submit" class="btn btn-success">Create user</button>
+            </form>
+
+            <h3>Create an exercise</h3>
+
+            <div id="exercise-alert"></div>
+
+            <form id="exercise-form" method="post">
+              <p><code>POST /api/users/:_id/exercises</code></p>
+
+              <label class="form-label" for="user-id">User ID: </label>
+              <input class="form-control" type="text" id="user-id" required />
+
+              <label class="form-label" for="description">Description: </label>
+              <input
+                class="form-control"
+                type="text"
+                id="description"
+                name="description"
+                required
+              />
+
+              <label class="form-label" for="duration">Duration: </label>
+              <input
+                class="form-control"
+                type="number"
+                id="duration"
+                name="duration"
+                required
+              />
+
+              <label class="form-label" for="date">Date: </label>
+              <input class="form-control" type="date" id="date" name="date" />
+
+              <button class="btn btn-success" type="submit">
+                Create an exercise
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const createAlert = (where, msg, color) => {
+        let alertContainer = document.getElementById(where);
+        new bootstrap.Alert(alertContainer);
+        alertContainer.classList.add(
+          "alert alert-dismissible fade show" + color
+        );
+        alertContainer.setAttribute("role", "alert");
+        alertContainer.setAttribute("aria-live", "polite");
+
+        let alertContent = document.createElement("span");
+        alertContent.textContent = msg;
+        alertContainer.append(alertContent);
+
+        let alertDismissButton = document.createElement("button");
+        alertDismissButton.classList.add("btn-close");
+        alertDismissButton.setAttribute("data-bs-dismiss", "alert");
+        alertDismissButton.setAttribute("aria-label", "Close");
+        alertContainer.append(alertDismissButton);
+      };
+
+      let form = document.getElementById("exercise-form");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const userId = document.getElementById("user-id").value;
+        const formData = new FormData(event.target);
+
+        if (!userId) {
+          return;
+        }
+
+        fetch("/api/user/" + userId + "/exercises", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => {
+            alert("Exercise created");
+          })
+          .catch((err) => alert("unable to create exercise"));
+      });
+    </script>
+  </body>
+</html>
